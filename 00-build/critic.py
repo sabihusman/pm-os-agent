@@ -8,8 +8,10 @@ from __future__ import annotations
 import json
 
 from prompts import CRITIC_SYSTEM
+from langsmith import traceable
 
 
+@traceable
 def review(client, model: str, proposed_output: str, source_data: str) -> dict:
     """Return {"verdict": "pass"|"fail", "reasons": [...]} for a proposed output."""
     resp = client.chat.completions.create(

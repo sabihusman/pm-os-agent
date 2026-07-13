@@ -26,6 +26,8 @@ import os
 import sys
 
 from openai import OpenAI
+from langsmith.wrappers import wrap_openai
+from langsmith import traceable
 
 import tools
 from critic import review
@@ -100,8 +102,9 @@ def banner(text: str) -> None:
     print(f"\n{'=' * 64}\n{text}\n{'=' * 64}")
 
 
+@traceable
 def run(which: str = "happy") -> None:
-    client = OpenAI()
+    client = wrap_openai(OpenAI())
     bounds = Bounds()
     task = tools.get_task(which)
     if "error" in task:
