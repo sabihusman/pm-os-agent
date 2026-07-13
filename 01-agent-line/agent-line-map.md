@@ -1,33 +1,30 @@
-# Agent Line Map: Cortex PM Chief-of-Staff Agent
+# Agent-Line Map — Cortex (PM Chief-of-Staff Agent)
 
-> Module 1 · The Agent Line
+**Module 1 deliverable** · Decisions broken out, scored on three axes, and placed above or below the agent line.
 
-## The workflow, decision by decision
+## The framework
 
-List every discrete decision or action in your agent's workflow, then score each one and place it **above** the line (a human owns it) or **below** (the agent owns it). Borderline calls get an HITL checkpoint.
+- **Reversibility** — if Cortex gets this wrong, how easily do we undo it?
+- **Blast radius** — how much damage does a wrong call cause before someone catches it?
+- **Measurability** — can we reliably tell, after the fact, whether it was right?
 
-| Decision / action | Reversibility (H/M/L) | Blast radius (H/M/L) | Measurability (H/M/L) | Above / Below | HITL? |
-|---|---|---|---|---|---|
-| _Pull project state + recent GitHub/Jira activity_ | H | L | H | Below | · |
-| _Draft the weekly leadership status update_ | H | M | M | Below | spot-check |
-| _Propose next sprint's stories from the PRD (within cap)_ | M | M | M | Below | spot-check |
-| _Post the update to a channel / commit a ship date_ | L | H | M | Above | required |
-| _Mark a launch gate green / merge or close a ticket_ | L | H | M | Above | required |
-| _…_ | | | | | |
+**Golden rule:** High reversibility + low blast radius + high measurability → **Below** the line (Cortex owns). Low reversibility, OR high blast radius, OR low measurability → **Above** the line (human owns), or **HITL** (Cortex does the work, a human approves before it proceeds).
 
-## Agent anatomy (sketch)
+## Scored decision table
 
-- **Model:** _your default fast model + when you escalate to a frontier model, and why_
-- **Tools:** _project + activity lookup (read) · past-update search · roadmap · team norms · story proposal (capped) …_
-- **Memory:** _what persists across runs (roadmap, decisions, norms) vs. purged_
-- **Loop:** _placeholder, defined in M2 loop-spec.md_
-- **Bounds:** _placeholder, defined in M5 bounds-and-evals.md_
-- **Evals:** _placeholder, defined in M5 bounds-and-evals.md_
+| # | Decision / action | Reversibility | Blast radius | Measurability | Verdict | One-line justification |
+|---|---|---|---|---|---|---|
+| 1 | Pull project state / recent activity | High | Low | High | Below | Read-only and re-runnable, so a wrong pull costs nothing — Cortex owns it. |
+| 2 | Decide which past context is relevant | High | Low | Med | Below | Cheap to correct and low-risk; a bad pick only weakens a draft nobody's sent. |
+| 3 | Draft the leadership status update | High | Low | High | Below | Nothing leaves the building until a human sends, so drafting sits safely below. |
+| 4 | Decide tone / commitment level (e.g. promising a date) | Med | Med | Low | HITL | A commitment is hard to walk back and tone is fuzzy to score, so a human approves. |
+| 5 | Flag a project at-risk / issue as likely escalation | High | Low | Med | HITL | A wrong at-risk flag erodes trust in the system, so a human confirms it before it stands. |
+| 6 | Choose which risk call to escalate to a human | Med | Med | Med | HITL | All three axes are middling, so a human confirms which call actually goes up. |
+| 7 | Propose a story batch within the cap | Med | Med | Low | HITL | Reversible but its justification is hard to verify, so a human clears the batch. |
+| 8 | Post an update / approve a company-wide one | Low | High | Low | Above | Near-impossible to reverse with a high blast radius — a human owns this, always. |
 
-## The golden rule, applied
+**Split:** 3 Below · 4 HITL · 1 Above.
 
-_One sentence per above-the-line decision: why it stays human (which of reversibility / blast radius / measurability failed)._
+## Hardest above-vs-below call
 
-## Hardest call
-
-_Your toughest "above vs below" decision and how you resolved it. (Share this in `#cohort-channel`.)_
+**Propose a story batch within the cap (#7).** I went back and forth on this one. Reversibility pulls it toward Below — a queued proposal undoes easily, and in a real run Cortex only queued the batch `for_approval` and created nothing in the tracker. But a strict reading pulled it toward Above, because you can't reliably tell after the fact whether it proposed the *right* stories. **Measurability** is the axis that settled it: because nothing else can verify whether the batch is correct, a human has to clear it — so it lands at HITL, not Below and not Above.
