@@ -1,8 +1,8 @@
 # Handoff: Cortex (pm-os-agent)
 
 > Living handoff doc, not a per-module snapshot. Update this as the project moves
-> instead of writing a new one each module. Last refreshed: end of Module 3, before
-> starting Module 4 (Memory & Context).
+> instead of writing a new one each module. Last refreshed: end of Module 4
+> (Memory & Context), before starting Module 5 (Bounds & Evals).
 
 ## Project summary
 
@@ -111,7 +111,7 @@ pm-os-agent/
 ├── 01-agent-line/agent-line-map.md     M1 deliverable — done
 ├── 02-loop-design/loop-spec.md         M2 deliverable — done
 ├── 03-orchestration/orchestration-map.md  M3 deliverable — done
-├── 04-memory-context/memory-and-context.md  M4 — NOT STARTED (next up)
+├── 04-memory-context/memory-and-context.md  M4 deliverable — done
 ├── 05-bounds-evals/bounds-and-evals.md M5 — not started
 ├── 06-autonomy/
 │   ├── prototype.md                    M6 deliverable — Module 3 section filled in
@@ -131,6 +131,8 @@ pm-os-agent/
 ## Progress (commits, all pushed to `origin/main`)
 
 ```
+e6b05ae Module 4: memory & context analysis, verified hallucination catch
+ee55392 Add HANDOFF.md living handoff doc through Module 3
 7eb0e05 Module 3: orchestration map + critic rejection screenshots
 e126a56 Add Module 2 loop spec
 0a9a0ab Add LangSmith tracing with nested traces (wrap_openai + @traceable)
@@ -145,9 +147,20 @@ f9ebeca Module 1: revise agent-line map formatting
   (revision 1/2, then 2/2) before the run hit `MAX_ITERATIONS` — both rejections
   screenshotted and embedded in `prototype.md`.
 - **LangSmith tracing** — done, committed (`0a9a0ab`), predates M2/M3 commits.
-- **M4, M5** — not started.
-- **M6 (`prototype.md`)** — partially filled (Module 3 section only); the top
-  screenshot table still needs rows 1, 3, 4, 5, 6.
+- **M4** (memory & context) — done, committed (`e6b05ae`). Filled in via close
+  reading of `agent.py`/`tools.py`/`critic.py` plus 3 live `task-happy` runs, not
+  just prose: found and documented a real Cortex/critic drift on green-vs-yellow
+  thresholds, a `search_past_updates` fallback that silently returns irrelevant
+  precedent when nothing matches, and that `get_roadmap`'s confidentiality bound
+  is prompt-enforced (soft) unlike the hard-blocked publish/create/date bounds.
+  Verified live that withholding the `activation_rate` source did NOT cause
+  Cortex to invent a number (3 revisions, all qualitative); separately confirmed
+  the critic's traceability check catches an invented metric via a targeted
+  adversarial draft fed straight to `critic.review()`.
+- **M5** — not started.
+- **M6 (`prototype.md`)** — Module 3 and Module 4 sections filled in (Module 4
+  as text/JSON evidence, not a screenshot — no screenshot tool was available this
+  session); the top screenshot table still needs rows 1, 4, 5, 6.
 
 ## Open tasks
 
@@ -155,11 +168,18 @@ f9ebeca Module 1: revise agent-line map formatting
    check before assuming it's done.
 2. **Post the M3 cohort-channel response** (orchestration map + critic:
    fail-action = revise then escalate, revision cap = 2).
-3. **Start Module 4 (Memory & Context)** — `04-memory-context/memory-and-context.md`
-   is still the unedited template.
-4. **Fill remaining `prototype.md` screenshot rows** — 1 (happy-path/HITL), 3
-   (grounded update + caught hallucination, M4), 4 (jailbreak refusal, M5), 5
-   (bound trip, M5), 6 (end-to-end, M6).
+3. **Start Module 5 (Bounds & Evals)** — `05-bounds-evals/bounds-and-evals.md`
+   is still the unedited template; bounds themselves are already set in `.env`
+   (see "Decisions already made" below) but not yet formally justified there.
+   Also consider: M4 surfaced a real Cortex/critic drift on green-vs-yellow
+   thresholds — tightening that rubric is arguably M3/M5-adjacent cleanup, not
+   yet actioned, flag to the user before touching `CORTEX_SYSTEM`/`CRITIC_SYSTEM`
+   since M1–M3 are marked done and not up for casual re-litigation.
+4. **Fill remaining `prototype.md` screenshot rows** — 1 (happy-path/HITL), 4
+   (jailbreak refusal, M5), 5 (bound trip, M5), 6 (end-to-end, M6). Row 3 (M4)
+   is filled with text/JSON evidence, not an image — no screenshot tool was
+   available; if a real screenshot becomes possible later, consider swapping it
+   in to match rows 1/2's format.
 
 ## User working-style notes
 
